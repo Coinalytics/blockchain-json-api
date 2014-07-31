@@ -2,6 +2,7 @@ var blockchain = require('./lib/blockchain');
 var fs = require('fs');
 
 var bc = new blockchain();
+var initial_block = '300000';
 
 function retrieve_block(number) {
   block_number = number.toString();
@@ -15,18 +16,15 @@ function retrieve_block(number) {
           console.log(err);
         } else {
           console.log("Block was saved to file " + filename);
+	  retrieve_block(++number);
         }
       });
       console.log(block_number + ' received, saving to file..');
   });
 }
 
-var number = 300000;
-
-setInterval(function() {
-  number++;
-  retrieve_block(number);
-}, 1000);
+// kick off retrieval with initial block
+retrieve_block(initial_block);
 
 
 /* More methods are available on http://blockchain.info/api/blockchain_api */
