@@ -5,21 +5,38 @@ var bc = new blockchain();
 var initial_block = '300000';
 
 function retrieve_block(number) {
+  // create block number string from incoming number
   block_number = number.toString();
-  bc.API('rawblock', block_number, function (res, err) {
-    if (err)
-      console.log('Error! ', err)
-    else
-      var filename = "./json/" + block_number + ".json";
-      fs.writeFile(filename, JSON.stringify(res), function(err) {
+
+  // create filename from block number string
+  var filename = "./json/" + block_number + ".json";
+
+  // check if file exists
+  fs.readFile(filename, function(not_found, data) {
+
+    // check for file existence
+    if (not_found) {
+    
+      // retrieve the block, since it does not exist in the file system
+      bc.API('rawblock', block_number, function (res, err) {
         if (err) {
-          console.log(err);
+          console.error('Error retrieving block information from blockchain.info: ', err);
         } else {
-          console.log("Block was saved to file " + filename);
-	  retrieve_block(++number);
+          fs.writeFile(filename, res, function(err) {
+            if (err) {
+              console.error('Error writing file ' + filename, err);
+            } else {
+              console.log('Block was saved to file ' + filename);
+            }
+            retrieve_block(++number);
+          });
+          console.log(block_number + ' received, saving to file..');
         }
       });
-      console.log(block_number + ' received, saving to file..');
+    } else {
+      console.log('Skipping ' + filename + ', file already exists');
+      retrieve_block(++number);
+    }
   });
 }
 
