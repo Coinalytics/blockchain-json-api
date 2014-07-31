@@ -11,7 +11,7 @@ function retrieve_block(number) {
       console.log('Error! ', err)
     else
       var filename = "./json/" + block_number + ".json";
-      fs.writeFile(filename, res, function(err) {
+      fs.writeFile(filename, JSON.stringify(res), function(err) {
         if (err) {
           console.log(err);
         } else {
