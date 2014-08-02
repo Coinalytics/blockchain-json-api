@@ -22,7 +22,7 @@ function retrieve_block(number) {
         if (err) {
           console.error('Error retrieving block information from blockchain.info: ', err);
         } else {
-          fs.writeFile(filename, res, function(err) {
+          fs.writeFile(filename, JSON.stringify(res), function(err) {
             if (err) {
               console.error('Error writing file ' + filename, err);
             } else {
